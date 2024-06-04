@@ -7,7 +7,7 @@ export const Profile = () => {
   const { theme } = useTheme()
 
   return (
-    <Card variant="flat" css={{ p: "$6", height: 340}}>
+    <Card variant="flat" css={{ height: 340}}>
       <Card.Header>
         {/* <Avatar color="gradient" squared icon={<Notification set="bold" primaryColor={theme?.colors.background.value} />} /> */}
         <Grid.Container css={{ pl: "$6" }}>

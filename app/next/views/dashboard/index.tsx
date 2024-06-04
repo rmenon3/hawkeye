@@ -1,4 +1,4 @@
-import { Grid, Input, Loading } from "@nextui-org/react";
+import { Button, Grid, Input, Loading } from "@nextui-org/react";
 import { DataCard } from "@/views/dashboard/data-card";
 import { Profile } from "@/views/dashboard/profile";
 import { Swipe } from "@/views/dashboard/swiper";
@@ -28,6 +28,7 @@ export const DashboardPage = () => {
   const [pieData, setPieData] = useState(0);
   const [isLoading, setLoading] = useState(true)
   const [showWebsiteDashboard, setShowWebsiteDashboard] = useState(false)
+  const [search, setSearch] = useState(false);
   const [monthlyData, setMonthlyData] = useState<any>({});
   const [customerData, setCustomerData] = useState<any>({});
   const [competitorData, setCompetitorData] = useState<any>({});
@@ -158,7 +159,8 @@ export const DashboardPage = () => {
 
 
   useEffect(() => {
-    if(validateURl(value)){
+    if(search && validateURl(value)){
+      
       setShowWebsiteDashboard(true);
       const currentUrl = validUrls(value);
     console.log("Current Url", currentUrl)
@@ -249,15 +251,15 @@ export const DashboardPage = () => {
     //     // setCountryImage("https://flagsapi.com/"+data.CountryRank.CountryCode+"/shiny/64.png")
     //   })
     // },2000);
-    
+    setSearch(false);
     }else{
-      setShowWebsiteDashboard(false);
+      // setShowWebsiteDashboard(false);
     }
 
     // https://data.similarweb.com/api/v1/data?domain=sephora.com
 
     // https://data.similarweb.com/api/v1/data?domain=sephora.com
-  }, [value])
+  }, [search,value])
 
 
   // useEffect(() => {
@@ -270,7 +272,7 @@ export const DashboardPage = () => {
         <Swipe />
       </Grid>
       <Grid xs={12} lg={3} >
-        <Grid.Container alignItems="flex-start" >
+        <Grid.Container alignItems="flex-start" gap={1}>
 
           <Grid xs={12} lg={12} >
             <Input
@@ -308,8 +310,10 @@ export const DashboardPage = () => {
             // helperText={helper.text}
             // className="max-w-xs"
             />
+            <Button onClick={()=>setSearch(true)} auto>GO</Button>
             {/* <p className="text-default-500 text-small">Input value: {value}</p> */}
           </Grid>
+          {/* <Grid xs={12} lg={12} css={{ py: "$6" }}></Grid> */}
           <Grid xs={12} lg={12} ><Profile /></Grid>
           {/* <Grid xs={6} lg={12} ><QuickEntry /></Grid> */}
         </Grid.Container>
