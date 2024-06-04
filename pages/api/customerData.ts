@@ -13,7 +13,7 @@ const handler = async (req: any, res: any) => {
           urlDomain = urlDomain.replace(/^www\./i, "");
         const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ urlDomain);
         const data = await response.json();
-        console.log(JSON.stringify(data))
+        console.log(JSON.stringify(data));
         return res.end(JSON.stringify(data));
     } catch (err:any) {
         return res.end(JSON.stringify({'error':err.message}));

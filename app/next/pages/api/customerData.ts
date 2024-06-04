@@ -7,8 +7,15 @@ const handler = async (req: any, res: any) => {
             method,
           } = req;
           console.log(domain, method);
-        const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ domain);
+          let urlDomain = domain.replace(/^https?:\/\//i, "");
+
+          // Remove 'www.'
+          urlDomain = urlDomain.replace(/^www\./i, "");
+        const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ urlDomain);
         const data = await response.json();
+        console.log(JSON.stringify(data))
+        // const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ domain);
+        // const data = await response.json();
         return res.end(JSON.stringify(data));
     } catch (err:any) {
         return res.end(JSON.stringify({'error':err.message}));
