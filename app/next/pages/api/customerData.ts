@@ -9,7 +9,7 @@ const handler = async (req: any, res: any) => {
           console.log(domain, method);
           let urlDomain = domain.replace(/^https?:\/\//i, "");
 
-// import cors from "cors";
+// // import cors from "cors";
 
           // Remove 'www.'
           urlDomain = urlDomain.replace(/^www\./i, "");
@@ -20,7 +20,9 @@ const handler = async (req: any, res: any) => {
         //     console.log("1", data);
         //     res.status(200).json(data);
         //   });
-        const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ urlDomain);
+        const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ urlDomain,{
+            mode: 'no-cors'
+          });
         const data = await response.json();
         console.log(JSON.stringify(data))
         // const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ domain);
