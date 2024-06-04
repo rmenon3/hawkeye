@@ -25,5 +25,9 @@
     "react-feather": "^2.0.10",
     "react-iconly": "^2.2.5",
     "zustand": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.1",
+    "typescript": "^5.4.5"
   }
 }
