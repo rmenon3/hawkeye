@@ -79,7 +79,8 @@
 export default function handler(req:any, res:any, next:any) {
     async function getURI(url:any) {
       try {
-        const response:any = await fetch('http://data.similarweb.com/api/v1/data?domain='+ url);;
+        // const response:any = await fetch('http://data.similarweb.com/api/v1/data?domain='+ url);;
+        const response:any = await fetch('https://api.allorigins.win/get?url=http://data.similarweb.com/api/v1/data?domain='+ url);;
         const data = await response.json();
         return res.end(JSON.stringify(data));
         // if (response.status !== 200) {
