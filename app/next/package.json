@@ -1,0 +1,29 @@
+{
+  "name": "next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 10020",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@next/font": "13.1.1",
+    "@nextui-org/react": "1.0.0-beta.12",
+    "@react-spring/web": "^9.6.1",
+    "chart.js": "^4.1.2",
+    "eslint-config-next": "^14.2.3",
+    "formik": "^2.2.9",
+    "next": "^14.2.3",
+    "next-themes": "^0.2.1",
+    "react": "^18.3.1",
+    "react-aria": "^3.22.0",
+    "react-bootstrap-icons": "^1.10.2",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.3.1",
+    "react-feather": "^2.0.10",
+    "react-iconly": "^2.2.5",
+    "zustand": "^4.2.0"
+  }
+}
