@@ -9,6 +9,7 @@ const handler = async (req: any, res: any) => {
           console.log(domain, method);
         const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ domain);
         const data = await response.json();
+        console.log(data);
         return res.end(JSON.stringify(data));
     } catch (err:any) {
         return res.end(JSON.stringify({'error':err.message}));
