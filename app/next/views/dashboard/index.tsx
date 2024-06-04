@@ -178,12 +178,12 @@ export const DashboardPage = () => {
       // setMonthlyData(data.EstimatedMonthlyVisits);
       // setCountryImage("https://flagsapi.com/"+data.CountryRank.CountryCode+"/shiny/64.png")
     })
-  fetch('/api/customerData?domain='+currentUrl)
+  fetch('https://api.allorigins.win/get?url=http://data.similarweb.com/api/v1/data?domain='+currentUrl)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      setCustomerData(data);
-      setMonthlyData(data.EstimatedMonthlyVisits);
+      // console.log(data.content?.json());
+      setCustomerData(JSON.parse(data.contents));
+      setMonthlyData(JSON.parse(data.contents).EstimatedMonthlyVisits);
       // setCountryImage("https://flagsapi.com/"+data.CountryRank.CountryCode+"/shiny/64.png")
     })
     // timeout && clearTimeout(timeout);
