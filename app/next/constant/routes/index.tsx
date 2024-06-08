@@ -20,14 +20,7 @@ export interface Route {
 
 /** NavigationBar MenuData  */
 export const navMenuRoutes: Route[] = [
-  {
-    path: "/",
-    name: "Home",
-    meta: {
-      title: "Home",
-      icon: <Home/>
-    },
-  },
+ 
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -47,3 +40,12 @@ export const navMenuRoutes: Route[] = [
 //       icon: <Home/>
 //     },
 //   },
+
+// {
+//   path: "/",
+//   name: "Home",
+//   meta: {
+//     title: "Home",
+//     icon: <Home/>
+//   },
+// },

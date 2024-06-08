@@ -15,6 +15,7 @@ import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Search } from "react-iconly";
 import { Icon } from "@/layout/avatar-bar/icon";
 import { CardTransactions } from "./card-transactions";
+import VideoPlayer from "@/views/dashboard/video";
 type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
 export const DashboardPage = () => {
@@ -37,6 +38,13 @@ export const DashboardPage = () => {
   const handleChange = (e: ChangeEvent<FormElement>) => {
     setValue(e.target.value);
   };
+
+  const handleClickEvent = (data:any)=> {
+    // click event object, 'Hello from child'
+    console.log(data);
+    setValue(data);
+    setSearch(true);
+  }
 
   const debounce=(callback: { (): void; (): void; }, delay: number | undefined) => {
     let timeoutId: string | number | NodeJS.Timeout | undefined;
@@ -83,10 +91,12 @@ export const DashboardPage = () => {
       // this.setState({ errorMessage: error.toString() });
       console.error('There was an error!', error);
     });
-  fetch('https://any-api.com:8443/https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&category=best-practices&category=performance&category=pwa&category=seo&strategy=desktop&url='+currentUrl+'&alt=json')
+  // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&category=best-practices&category=performance&category=pwa&category=seo&strategy=desktop&url='+currentUrl+'&alt=json')
+  fetch('/api/customerData?domain='+currentUrl)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
+      setShowWebsiteDashboard(true);
       let pScore = data?.lighthouseResult?.categories?.performance?.score * 100;
       let accScore = data?.lighthouseResult?.categories?.accessibility?.score * 100;
       let secScore = Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100);
@@ -161,16 +171,9 @@ export const DashboardPage = () => {
   useEffect(() => {
     if(search && validateURl(value)){
       
-      setShowWebsiteDashboard(true);
+      // setShowWebsiteDashboard(true);
       const currentUrl = validUrls(value);
     console.log("Current Url", currentUrl)
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        "origin": currentUrl
-      })
-    };
       debouncedFunction();
       fetch('/api/competitorData?domain='+currentUrl)
     .then(res=>res.json())
@@ -267,65 +270,21 @@ export const DashboardPage = () => {
 
   // )
   return (
-    <Grid.Container gap={2} justify="flex-start">
-      <Grid xs={12} lg={9}>
-        <Swipe />
-      </Grid>
-      <Grid xs={12} lg={3} >
-        <Grid.Container alignItems="flex-start" gap={1}>
+    
+    <>
+      {!showWebsiteDashboard &&<Grid xs={12} lg={12}>
+        <Swipe emitClickEvent={handleClickEvent}/>
+        {/* <VideoPlayer /> */}
+      </Grid>}
 
-          <Grid xs={12} lg={12} >
-            <Input
-              contentLeft={
-                <Icon
-                  as={Search}
-                  style={{
-                    width: 20,
-                    height: 20,
-                  }}
-                />
-              }
-              contentLeftStyling={false}
-              css={{
-                w: "100%",
-                "@xsMax": {
-                  mw: "300px",
-                },
-                "& .nextui-input-content--left": {
-                  h: "100%",
-                  ml: "$4",
-                  dflex: "center",
-                },
-              }}
-              type="url"
-              placeholder="Search..."
-              // variant="bordered"
-              // isInvalid={isInvalid}
-              // color={isInvalid ? "danger" : "success"}
-              // errorMessage="Please enter a valid email"
-              onChange={handleChange}
-              status={helper.color}
-              color={helper.color}
-              helperColor={helper.color}
-            // helperText={helper.text}
-            // className="max-w-xs"
-            />
-            <Button onClick={()=>setSearch(true)} auto>GO</Button>
-            {/* <p className="text-default-500 text-small">Input value: {value}</p> */}
-          </Grid>
-          {/* <Grid xs={12} lg={12} css={{ py: "$6" }}></Grid> */}
-          <Grid xs={12} lg={12} ><Profile /></Grid>
-          {/* <Grid xs={6} lg={12} ><QuickEntry /></Grid> */}
-        </Grid.Container>
-      </Grid>
-     {showWebsiteDashboard && 
-      <><Grid xs={6} sm={6} md={3} lg={3}>
-        <DataCard
+      {showWebsiteDashboard &&
+        <><Grid.Container gap={2} justify="flex-start"><Grid xs={6} sm={6} md={3} lg={3}>
+          <DataCard
             title="PERFORMANCE"
             subText="vs last day"
             trendText="+4"
             content={performaceData} />
-         
+
         </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               status="error"
@@ -347,45 +306,45 @@ export const DashboardPage = () => {
               content={securityData} />
           </Grid>
           <Grid xs={4} lg={6}>
-            <CardTransactions customerData={customerData}/>
+            <CardTransactions customerData={customerData} />
           </Grid>
           <Grid xs={6} lg={6}>
             <PieCharts content={pieData} key={undefined} />
           </Grid>
-          
+
           <Grid xs={6} lg={6}>
             <FillLineCharts content={monthlyData} />
           </Grid><Grid xs={4} lg={6}>
-            <DataTableCard customerData={customerData} competitorData={competitorData}/>
+            <DataTableCard customerData={customerData} competitorData={competitorData} />
           </Grid>
           {/* <Grid xs={4} lg={4}>
-            <CardTransactions customerData={customerData}/>
-          </Grid> */}
-          <Grid xs={12} lg={12}>
+              <CardTransactions customerData={customerData}/>
+            </Grid> */}
+          {/* <Grid xs={12} lg={12}>
             <LineCharts />
-          </Grid>
-          {/* <Grid xs={12} lg={8}>
-            <CardTransactions />
           </Grid> */}
+          {/* <Grid xs={12} lg={8}>
+              <CardTransactions />
+            </Grid> */}
           {/* CardTransactions */}
-      {/* <Grid xs={6} lg={3} >
-        <PolarAreaCharts />
-      </Grid> */}
-      {/* <Grid xs={6} lg={3}>
-        <FillLineCharts />
-      </Grid> */}
+          {/* <Grid xs={6} lg={3} >
+              <PolarAreaCharts />
+            </Grid> */}
+          {/* <Grid xs={6} lg={3}>
+              <FillLineCharts />
+            </Grid> */}
 
-      {/* <Grid xs={6} lg={3}>
-        <RadarCharts />
-      </Grid>
-      <Grid xs={12} sm={12} md={6} lg={6}>
-        <VerticalBarCharts />
-      </Grid>*/}
-      {/* <Grid xs={12} sm={12} md={6} lg={6}>
-        <GroupLineCharts />
-      </Grid> */}
-      </>
-    }
-    </Grid.Container>
+          {/* <Grid xs={6} lg={3}>
+              <RadarCharts />
+            </Grid>
+            <Grid xs={12} sm={12} md={6} lg={6}>
+              <VerticalBarCharts />
+            </Grid>*/}
+          {/* <Grid xs={12} sm={12} md={6} lg={6}>
+              <GroupLineCharts />
+            </Grid> */}
+            </Grid.Container>
+      </>}
+    </>
   );
 };

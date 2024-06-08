@@ -27,7 +27,7 @@ export default function ({
       <Container
         lg
         css={{
-          pt: "$10",
+          // pt: "$10",
           bg: '$background'
         }}
       >
