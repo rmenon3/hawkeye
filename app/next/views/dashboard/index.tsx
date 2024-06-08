@@ -15,7 +15,6 @@ import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { Search } from "react-iconly";
 import { Icon } from "@/layout/avatar-bar/icon";
 import { CardTransactions } from "./card-transactions";
-import VideoPlayer from "@/views/dashboard/video";
 type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
 export const DashboardPage = () => {
