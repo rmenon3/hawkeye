@@ -3,13 +3,15 @@ import { useState } from "react";
 import { AtSign, Mail } from "react-feather";
 import { Password } from "react-iconly";
 
-export const Swipe = ({ emitClickEvent }: any) => {
+export const Swipe = ({ emitClickEvent,showImage}: any) => {
   const [visible, setVisible] = useState(false);
+  const [progress, setProgress] = useState(false);
   // const [websiteUrl, setWebSiteUrl] = useState('');
   const { value, reset, bindings } = useInput("");
   const handler = () => setVisible(true);
   const closeHandler = () => {
     setVisible(false);
+    setProgress(true);
     emitClickEvent(value)
     console.log("closed");
   };
@@ -18,7 +20,7 @@ export const Swipe = ({ emitClickEvent }: any) => {
   //   emitClickEvent(event, 'Hello from child');
   // }
   return (
-    <Card variant="flat" css={{ w: "100%", h: "100%" }}>
+    <Card variant="flat" css={{ w: "100%", h:showImage? "500px" :"100%"}}>
       <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
         {/* <Col>
           <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
@@ -30,22 +32,22 @@ export const Swipe = ({ emitClickEvent }: any) => {
         </Col> */}
       </Card.Header>
       <Card.Body css={{ p: 0 }}>
-        {/* <Card.Image
+       {showImage && <Card.Image
           src="/cover1.png"
           width="100%"
           height="100%"
-          objectFit="cover"
+          objectFit="fill"
           alt="Swipe Background"
-        /> */}
-        <video
-          src={require("../../public/L7.mp4")}
+        />}
+        {!showImage &&<video
+          src={require("../../public/l7Intro.mp4")}
           autoPlay
           controls
           loop
 
-        />
+        />}
       </Card.Body>
-      <Card.Footer
+     {!showImage &&  <Card.Footer
         isBlurred
         css={{
           position: "absolute",
@@ -57,12 +59,12 @@ export const Swipe = ({ emitClickEvent }: any) => {
       >
         <Row>
           <Col>
-            <Text color="$text" size="$xs">
-              Available soon.
-            </Text>
-            <Text color="$text" size="$xs">
-              Get notified.
-            </Text>
+           { progress && <Text color="$text" size="$sm">
+              Please wait while the site is being analysed . 
+            </Text>}
+            {progress && <Text color="$text" size="$sm">
+              Get notified Soon.
+            </Text>}
           </Col>
           <Col>
             <Row justify="flex-end">
@@ -128,7 +130,7 @@ export const Swipe = ({ emitClickEvent }: any) => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </Card.Footer>
+      </Card.Footer>}
     </Card>
   )
 }
