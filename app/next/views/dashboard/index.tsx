@@ -90,8 +90,8 @@ export const DashboardPage = () => {
       // this.setState({ errorMessage: error.toString() });
       console.error('There was an error!', error);
     });
-  // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&category=best-practices&category=performance&category=pwa&category=seo&strategy=desktop&url='+currentUrl+'&alt=json')
-  fetch('/api/customerData?domain='+currentUrl)
+  fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&category=best-practices&category=performance&category=pwa&category=seo&strategy=desktop&url='+currentUrl+'&alt=json')
+  // fetch('/api/customerData?domain='+currentUrl)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
