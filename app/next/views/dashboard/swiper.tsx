@@ -1,5 +1,5 @@
 import { Card, Col, Row, Button, Text, Modal, Input, Checkbox, Textarea, useInput } from "@nextui-org/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AtSign, Mail } from "react-feather";
 import { Password } from "react-iconly";
 
@@ -29,7 +29,17 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
     const intervalID = setInterval(shuffle, 1000);
     return () => clearInterval(intervalID);
   }, [shuffle])
+  // const videoRef = useRef(null);
 
+  // useEffect(() => {
+  //   const video:any = videoRef.current;
+  //   if (video) {
+  //     video.muted = true;
+  //     video.play().catch((error:any) => {
+  //       console.error('Video failed to autoplay:', error);
+  //     });
+  //   }
+  // }, []);
   return (
     <Card variant="flat" css={{ w: "100%", h: showImage ? "500px" : "100%" }}>
       <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
@@ -44,9 +54,10 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
           alt="Swipe Background"
         />}
         {!showImage && <video
+        // ref={videoRef}
           src={require("../../public/l7Video.mp4")}
           autoPlay
-          // muted
+          muted
           controls
           loop
 
