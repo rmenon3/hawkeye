@@ -2,14 +2,14 @@
 export const config = {
     maxDuration: 300,
   };
-const handler2 = async (req: any, res: any) => {
+const handler3 = async (req: any, res: any) => {
     try {
-        console.log("Inside Customer Handler")
+        console.log("Inside Accessibility Handler")
         const {
             query: {  domain },
             method,
           } = req;
-        //   console.log(domain, req.query);
+          console.log(domain, req.query);
 
         const response = await fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category='+req.query.category+'&strategy='+req.query.strategy +'&url='+req.query.url+'&alt=json')
         const data = await response.json();
@@ -65,5 +65,5 @@ const handler2 = async (req: any, res: any) => {
 //   )
 // }
 
-export default handler2;
+export default handler3;
 
