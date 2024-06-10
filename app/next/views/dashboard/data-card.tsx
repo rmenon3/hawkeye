@@ -33,7 +33,11 @@ export const DataCard: React.FC<DataCardProps> = ({
       </Card>
     );
   };
-
+  const removeHyperlinks = (text:string) => {
+    // Regex to find all URLs /(https?:\/\/[^\s]+)/g;
+    const regex = /\(https?:\/\/[^\s]+\)/g;
+    return text.replace(regex, '');
+  };
  const list = auditResult?.map((item:any)=>{
   console.log(item?.value?.title);
   // <Text size="$sm" color="$accents7" transform="uppercase" >
@@ -48,7 +52,7 @@ export const DataCard: React.FC<DataCardProps> = ({
   {item?.value?.title}
 </Text>
 <Text size="$sm" css={{ mb: 5 }}color="$accents7" >
-                {item?.value?.description.split(' [')[0]}
+                {removeHyperlinks(item?.value?.description)}
               </Text></>
 
  })
@@ -63,7 +67,7 @@ export const DataCard: React.FC<DataCardProps> = ({
                 {title}
               </Text>
               {content ? <Text h3>{content}</Text> : <Loading></Loading>}
-              <Flex>
+              {/* <Flex>
                 <Text
                   css={{
                     mr: "$3",
@@ -75,7 +79,7 @@ export const DataCard: React.FC<DataCardProps> = ({
                   {trendText}
                 </Text>
                 <Text color="$accents7">{subText}</Text>
-              </Flex>
+              </Flex> */}
             </Container>
           </Grid>
           <Grid xs={2}>
