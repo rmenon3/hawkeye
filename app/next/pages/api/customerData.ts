@@ -10,7 +10,7 @@ const handler2 = async (req: any, res: any) => {
             method,
           } = req;
         //   console.log(domain, req.query);
-
+        res.setHeader('Cache-Control', 'public, s-maxage=1');
         const response = await fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category='+req.query.category+'&strategy='+req.query.strategy +'&url='+req.query.url+'&alt=json')
         const data = await response.json();
         // debugger;
@@ -18,6 +18,7 @@ const handler2 = async (req: any, res: any) => {
         // const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ domain);
         // const data = await response.json();
         console.log("Inside 2 ", JSON.stringify(data))
+        
         return res.end(JSON.stringify(data));
     } catch (err:any) {
         return res.end(JSON.stringify({'error':err.message}));
