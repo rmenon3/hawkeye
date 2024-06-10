@@ -37,7 +37,7 @@ export const DashboardPage = () => {
     setSearch(true);
   }
 
-  const removeHyperlinks = (text) => {
+  const removeHyperlinks = (text:string) => {
     // Regex to find all URLs
     const regex = /(https?:\/\/[^\s]+)/g;
     return text.replace(regex, '');
