@@ -10,7 +10,7 @@ const handler = async (req: any, res: any) => {
 
           // Remove 'www.'
           urlDomain = urlDomain.replace(/^www\./i, "");
-        console.log(urlDomain, method);
+        // console.log(urlDomain, method);
         const response = await fetch('http://aranking.io/site-analysis/google_com');
         // console.log("resp",response)
         const data = await response.text();
@@ -27,7 +27,7 @@ const handler = async (req: any, res: any) => {
             }
         });
           const data2 = await response2.json();
-          console.log(JSON.stringify(data2))
+        //   console.log(JSON.stringify(data2))
         // var doc = parser.parseFromString(data, "text/html");
         // console.log("doc",doc)
         return res.end(JSON.stringify(data2));

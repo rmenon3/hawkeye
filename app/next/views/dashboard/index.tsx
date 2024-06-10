@@ -13,6 +13,7 @@ export const DashboardPage = () => {
   const [value, setValue] = useState<string>('');
   const [data, setData] = useState(null)
   const [performaceData, setPerformanceData] = useState(0);
+  const [pAuditResults, setpAuditResults] = useState([]);
   const [accessibilityData, setAccessibilityData] = useState(0);
   const [securityData, setSecurityData] = useState(0);
   const [seoData, setSEOData] = useState(0);
@@ -33,6 +34,27 @@ export const DashboardPage = () => {
     setSearch(true);
   }
 
+  const auditResults = (data: any) => {
+    // click event object, 'Hello from child'
+    console.log(data);
+    const improvements = Object.entries(data).map(([key,value])=>{
+       let ckey:any = key;
+      return {value}
+    })
+    console.log(improvements)
+    const improvementList = improvements.filter((data:any)=>{
+      if(!data.value?.score){
+        return data.value;
+      }
+    }) as []
+  console.log(improvementList)
+  setpAuditResults(improvementList);
+    // const improvements = data.map((record: { score: number; })=>record.score==0);
+    // console.log(improvements);
+    // setValue(data);
+    // setSearch(true);
+  }
+
   const debounce = (callback: { (): void; (): void; }, delay: number | undefined) => {
     let timeoutId: string | number | NodeJS.Timeout | undefined;
 
@@ -47,6 +69,8 @@ export const DashboardPage = () => {
   const debouncedFunction = debounce(() => {
     const currentUrl = validUrls(value);
     console.log("Current Url", currentUrl)
+    const finalUrl = 'performance&strategy=desktop&url=';
+    const finalAccUrl = 'accessibility&strategy=desktop&url=';
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -75,25 +99,64 @@ export const DashboardPage = () => {
         // this.setState({ postId: data.id })
       })
       .catch(error => {
-        // this.setState({ errorMessage: error.toString() });
+        // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
       });
-    fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&category=best-practices&category=performance&category=pwa&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
-      // fetch('/api/customerData?domain='+currentUrl)
+    // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=performance&strategy=desktop&url=' + currentUrl + '&alt=json')
+    console.log(finalUrl)
+      fetch('/api/customerData?category='+finalUrl+currentUrl)
       .then((res) => res.json())
-      .then((data) => {
+      .then((data:any) => {
         console.log(data);
         setShowWebsiteDashboard(true);
         let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
+        // let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
+        // let secScore = Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100);
+        // let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
+        auditResults(data?.lighthouseResult?.audits);
+        setPerformanceData(pScore)
+        // setAccessibilityData(accScore)
+        // setSecurityData(secScore)
+        // setSEOData(seoScore)
+        // setData(data);
+        // setLoading(false);
+      })
+      // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&strategy=desktop&url=' + currentUrl + '&alt=json')
+      fetch('/api/customerData?category='+finalAccUrl+currentUrl)
+      .then((res) => res.json())
+      .then((data:any) => {
+        // console.log(data);
+        // setShowWebsiteDashboard(true);
+        // let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
         let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
+        // let secScore = Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100);
+        let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
+        // auditResults(data?.lighthouseResult?.audits);
+        // setPerformanceData(pScore)
+        setAccessibilityData(accScore)
+        // setSecurityData(secScore)
+        // setSEOData(seoScore)
+        // setData(data);
+        // setLoading(false);
+      })
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=best-practices&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
+      // fetch('/api/customerData?domain='+currentUrl)
+      // fetch('/api/customerData?category='+finalAccUrl+currentUrl)
+      .then((res) => res.json())
+      .then((data:any) => {
+        // console.log(data);
+        // setShowWebsiteDashboard(true);
+        // let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
+        // let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
         let secScore = Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100);
         let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
-        setPerformanceData(pScore)
-        setAccessibilityData(accScore)
+        // auditResults(data?.lighthouseResult?.audits);
+        // setPerformanceData(pScore)
+        // setAccessibilityData(accScore)
         setSecurityData(secScore)
         setSEOData(seoScore)
-        setData(data);
-        setLoading(false);
+        // setData(data);
+        // setLoading(false);
       })
     // fetch('/api/competitorData?domain='+currentUrl)
     //   .then(res=>res.json())
@@ -262,7 +325,8 @@ export const DashboardPage = () => {
             title="PERFORMANCE"
             subText="vs last day"
             trendText="+4"
-            content={performaceData} />
+            content={performaceData}
+            auditResult={pAuditResults as []} />
 
         </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
@@ -270,7 +334,8 @@ export const DashboardPage = () => {
               title="ACCESSIBILITY"
               subText="vs last day"
               trendText="-1,012"
-              content={accessibilityData} />
+              content={accessibilityData}
+               />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SEO"

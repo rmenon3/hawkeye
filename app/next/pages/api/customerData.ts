@@ -6,9 +6,9 @@ const handler = async (req: any, res: any) => {
             query: {  domain },
             method,
           } = req;
-          console.log(domain, method);
+          console.log(domain, req.query);
 
-        const response = await fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=accessibility&category=best-practices&category=performance&category=pwa&category=seo&strategy=desktop&url='+ domain +'&alt=json')
+        const response = await fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category'+req.query.category+'&strategy='+req.query.strategy +'&url='+req.query.url+'&alt=json')
         const data = await response.json();
         // debugger;
     //    const data2 =JSON.parse(data.contents)

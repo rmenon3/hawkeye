@@ -1,5 +1,5 @@
 import { Card, Col, Row, Button, Text, Modal, Input, Checkbox, Textarea, useInput } from "@nextui-org/react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AtSign, Mail } from "react-feather";
 import { Password } from "react-iconly";
 
@@ -15,6 +15,24 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
     emitClickEvent(value)
     console.log("closed");
   };
+  const names = [
+    'Evaluating The Website Performance', 'Fetching the list of Competitors', 'Understanding website usage ' , 'Ranking your website across Category, Country & Globally'
+]
+  const [newName, setnewName] = useState("");
+
+    const shuffle = useCallback(() => {
+        const index = Math.floor(Math.random() * names.length);
+        setnewName(names[index]);
+    }, []);
+
+    useEffect(() => {
+        const intervalID = setInterval(shuffle, 1000);
+        return () => clearInterval(intervalID);
+    }, [shuffle])
+
+    // return(
+    //     <Text>name:{newName}</Text>
+    // )
 
   // function handleClick(event) {
   //   emitClickEvent(event, 'Hello from child');
@@ -40,7 +58,7 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
           alt="Swipe Background"
         />}
         {!showImage &&<video
-          src={require("../../public/l7Intro.mp4")}
+          src={require("../../public/l7Video.mp4")}
           autoPlay
           controls
           loop
@@ -54,16 +72,17 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
           bgBlur: "#ffffff66",
           borderTop: "$borderWeights$light solid rgba(255, 255, 255, 0.2)",
           bottom: 0,
+          height:100,
           zIndex: 1,
         }}
       >
         <Row>
           <Col>
-           { progress && <Text color="$text" size="$sm">
+           { progress && <Text color="black">
               Please wait while the site is being analysed . 
             </Text>}
-            {progress && <Text color="$text" size="$sm">
-              Get notified Soon.
+            {progress && <Text b color="black">
+            {newName}
             </Text>}
           </Col>
           <Col>
