@@ -1,4 +1,7 @@
 // import cors from '../../middleware/cors';
+export const config = {
+    maxDuration: 300,
+  };
 const handler = async (req: any, res: any) => {
     try {
         console.log("Inside Customer Handler")
