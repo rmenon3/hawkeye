@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AtSign, Mail } from "react-feather";
 import { Password } from "react-iconly";
 
-export const Swipe = ({ emitClickEvent,showImage}: any) => {
+export const Swipe = ({ emitClickEvent, showImage }: any) => {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(false);
   // const [websiteUrl, setWebSiteUrl] = useState('');
@@ -16,73 +16,60 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
     console.log("closed");
   };
   const names = [
-    'Evaluating The Website Performance', 'Fetching the list of Competitors', 'Understanding website usage ' , 'Ranking your website across Category, Country & Globally'
-]
+    'Evaluating The Website Performance', 'Fetching the list of Competitors', 'Understanding website usage ', 'Ranking your website across Category, Country & Globally'
+  ]
   const [newName, setnewName] = useState("");
 
-    const shuffle = useCallback(() => {
-        const index = Math.floor(Math.random() * names.length);
-        setnewName(names[index]);
-    }, []);
+  const shuffle = useCallback(() => {
+    const index = Math.floor(Math.random() * names.length);
+    setnewName(names[index]);
+  }, []);
 
-    useEffect(() => {
-        const intervalID = setInterval(shuffle, 1000);
-        return () => clearInterval(intervalID);
-    }, [shuffle])
+  useEffect(() => {
+    const intervalID = setInterval(shuffle, 1000);
+    return () => clearInterval(intervalID);
+  }, [shuffle])
 
-    // return(
-    //     <Text>name:{newName}</Text>
-    // )
-
-  // function handleClick(event) {
-  //   emitClickEvent(event, 'Hello from child');
-  // }
   return (
-    <Card variant="flat" css={{ w: "100%", h:showImage? "500px" :"100%"}}>
+    <Card variant="flat" css={{ w: "100%", h: showImage ? "500px" : "100%" }}>
       <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
-        {/* <Col>
-          <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
-            New
-          </Text>
-          <Text h3 color="black">
-            Acme camera
-          </Text>
-        </Col> */}
+
       </Card.Header>
       <Card.Body css={{ p: 0 }}>
-       {showImage && <Card.Image
+        {showImage && <Card.Image
           src="/cover1.png"
           width="100%"
           height="100%"
           objectFit="fill"
           alt="Swipe Background"
         />}
-        {!showImage &&<video
+        {!showImage && <video
           src={require("../../public/l7Video.mp4")}
           autoPlay
+          // muted
           controls
           loop
 
         />}
       </Card.Body>
-     {!showImage &&  <Card.Footer
+      {!showImage && <Card.Footer
         isBlurred
         css={{
           position: "absolute",
           bgBlur: "#ffffff66",
           borderTop: "$borderWeights$light solid rgba(255, 255, 255, 0.2)",
           bottom: 0,
-          height:100,
+          height: 100,
           zIndex: 1,
         }}
       >
         <Row>
           <Col>
-           { progress && <Text color="black">
-              Please wait while the site is being analysed . 
+            {progress && <Text color="black">
+              Please wait while the site is being analysed .
             </Text>}
             {progress && <Text b color="black">
-            {newName}
+              {newName}
             </Text>}
           </Col>
           <Col>
@@ -90,16 +77,7 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
               <Button auto color="warning" shadow onPress={handler}>
                 Analyse your website
               </Button>
-              {/* <Button flat auto rounded color="secondary" >
-                <Text
-                  css={{ color: "inherit" }}
-                  size={12}
-                  weight="bold"
-                  transform="uppercase"
-                >
-                 View Source
-                </Text>
-              </Button> */}
+
             </Row>
           </Col>
         </Row>
@@ -113,8 +91,8 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
           <Modal.Header>
             <Text id="modal-title" size={18}>
               Welcome to <b>Hawkeye</b>
-              </Text>
-            
+            </Text>
+
           </Modal.Header>
           <Modal.Body>
             <Input
@@ -131,15 +109,7 @@ export const Swipe = ({ emitClickEvent,showImage}: any) => {
               label="How can we help you today"
               placeholder="Enter your amazing ideas."
             />
-            {/* <Input
-              clearable
-              bordered
-              fullWidth
-              color="primary"
-              size="lg"
-              placeholder="Password"
-              contentLeft={<Password />}
-            /> */}
+
 
           </Modal.Body>
           <Modal.Footer>

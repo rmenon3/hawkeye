@@ -153,7 +153,7 @@ export const CardTransactions = (customerData: any) => {
                {/* <Flex css={{gap: '$6'}} align={'center'} justify="between"> */}
 
             </FlexBox>
-            <Divider></Divider>
+            {/* <Divider></Divider> */}
          </Card.Body>
       </Card>
    );
