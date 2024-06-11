@@ -122,19 +122,25 @@ export const DashboardPage = () => {
       fetch('/api/customerData?category='+finalUrl+currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
-        console.log(data);
+        // console.log(data);
         setShowWebsiteDashboard(true);
-        let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
-        auditResults(data?.lighthouseResult?.audits,'performance');
+        let pScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.performance?.score * 100):0;
+        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'performance');
+
+       
         setPerformanceData(pScore)
         
-      })
+      }).catch(error => {
+        // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
+        console.error('There was an error!', error);
+        setPerformanceData(0);
+      });
      
       fetch('/api/accessibilityData?category=accessibility&strategy=desktop&url=' + currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
        
-        let accScore = data ? Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100):0;
+        let accScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100):0;
         
         // auditResults(data?.lighthouseResult?.audits,'accessibility');
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'accessibility');
@@ -152,7 +158,7 @@ export const DashboardPage = () => {
       .then((res) => res.json())
       .then((data:any) => {
        
-        let seoScore = data ? Math.round(data?.lighthouseResult?.categories?.seo?.score * 100):0;
+        let seoScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.seo?.score * 100):0;
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'seo');
         // auditResults(data?.lighthouseResult?.audits,'seo');
         setSEOData(seoScore)
@@ -170,7 +176,7 @@ export const DashboardPage = () => {
         // setShowWebsiteDashboard(true);
         // let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
         // let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
-        let secScore = data ? Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100):0;
+        let secScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100):0;
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'best-practices');
         
         // let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
@@ -264,7 +270,7 @@ export const DashboardPage = () => {
          
           <DataCard
             title="PERFORMANCE"
-            subText="vs last day"
+            subText="Performance could not be measured at the moment"
             trendText="+4"
             content={performaceData}
             auditResult={pAuditResults as []} />
@@ -273,7 +279,7 @@ export const DashboardPage = () => {
             <DataCard
               status="error"
               title="ACCESSIBILITY"
-              subText="vs last day"
+              subText="Accessibility could not be measured at the moment"
               trendText="-1,012"
               content={accessibilityData}
               auditResult={accAuditResults as []} 
@@ -281,14 +287,14 @@ export const DashboardPage = () => {
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SEO"
-              subText="vs last day"
+              subText="SEO could not be measured at the moment"
               trendText="+4%"
               content={seoData}
               auditResult={seoAuditResults as []}  />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SECURITY"
-              subText="vs last day"
+              subText="Security could not be measured at the moment"
               trendText="+300"
               content={securityData} 
               auditResult={bestPracticesAuditResults as []} />

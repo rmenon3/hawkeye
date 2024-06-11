@@ -7,7 +7,7 @@ export interface DataCardProps {
   status?: "success" | "error";
   title: string;
   subText: string;
-  content: React.ReactNode;
+  content: number;
   auditResult?: [];
   trendText?: string;
 }
@@ -66,9 +66,9 @@ export const DataCard: React.FC<DataCardProps> = ({
               <Text size="$sm" color="$accents7" transform="uppercase" >
                 {title}
               </Text>
-              {content ? <Text h3>{content}</Text> : <Loading></Loading>}
-              {/* <Flex>
-                <Text
+              {content>=0? <Text h3>{content}</Text> : <Loading></Loading>}
+              {content<=0 &&<Flex>
+                  {/* <Text
                   css={{
                     mr: "$3",
                     fontWeight: "$bold",
@@ -77,9 +77,9 @@ export const DataCard: React.FC<DataCardProps> = ({
                   }}
                 >
                   {trendText}
-                </Text>
-                <Text color="$accents7">{subText}</Text>
-              </Flex> */}
+                </Text>*/}
+                <Text size="$xs" color="$accents7">{subText}</Text>
+              </Flex> }
             </Container>
           </Grid>
           <Grid xs={2}>
