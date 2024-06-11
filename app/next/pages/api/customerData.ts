@@ -15,12 +15,13 @@ const handler2 = async (req: any, res: any) => {
         //   console.log(domain, req.query);
       
         const response = await fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category='+req.query.category+'&strategy='+req.query.strategy +'&url='+req.query.url+'&alt=json')
+        // const response = await fetch('https://api.wattspeed.com/extlighthouse',{method:"POST",headers: { 'Content-Type': 'application/json' },body:JSON.stringify({"params": {"url": "https://www.amazon.com/", "action":"lighthouse", "section":"performance", "device":"desktop"}})})
         const data = await response.json();
         // debugger;
-    //    const data2 =JSON.parse(data.contents)
+    //    const data2 =JSON.parse(data.body)
         // const response = await fetch('http://data.similarweb.com/api/v1/data?domain='+ domain);
         // const data = await response.json();
-        console.log("Inside 2 ", JSON.stringify(data))
+        // console.log("Inside 2 ",data2)
        
         return res.end(JSON.stringify(data));
     } catch (err:any) {

@@ -134,25 +134,35 @@ export const DashboardPage = () => {
       .then((res) => res.json())
       .then((data:any) => {
        
-        let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
+        let accScore = data ? Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100):0;
         
-        auditResults(data?.lighthouseResult?.audits,'accessibility');
+        // auditResults(data?.lighthouseResult?.audits,'accessibility');
+        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'accessibility');
         
         setAccessibilityData(accScore)
        
-      })
+      }).catch(error => {
+        // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
+        console.error('There was an error!', error);
+        setAccessibilityData(0);
+      });
       // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=best-practices&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
       // fetch('/api/customerData?domain='+currentUrl)
       fetch('/api/seoData?category='+finalSeoUrl+currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
        
-        let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
-        auditResults(data?.lighthouseResult?.audits,'seo');
+        let seoScore = data ? Math.round(data?.lighthouseResult?.categories?.seo?.score * 100):0;
+        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'seo');
+        // auditResults(data?.lighthouseResult?.audits,'seo');
         setSEOData(seoScore)
         // setData(data);
         // setLoading(false);
-      })
+      }).catch(error => {
+        // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
+        console.error('There was an error!', error);
+        setSEOData(0)
+      });
       fetch('/api/secData?category='+finalSecUrl+currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
@@ -160,8 +170,9 @@ export const DashboardPage = () => {
         // setShowWebsiteDashboard(true);
         // let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
         // let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
-        let secScore = Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100);
-        auditResults(data?.lighthouseResult?.audits,'best-practices');
+        let secScore = data ? Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100):0;
+        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'best-practices');
+        
         // let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
         // auditResults(data?.lighthouseResult?.audits);
         // setPerformanceData(pScore)
@@ -170,7 +181,11 @@ export const DashboardPage = () => {
         // setSEOData(seoScore)
         // setData(data);
         // setLoading(false);
-      })
+      }).catch(error => {
+        // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
+        console.error('There was an error!', error);
+        setSecurityData(0)
+      });
    
 
   }, 0);

@@ -22,7 +22,7 @@ export const DataCard: React.FC<DataCardProps> = ({
 }) => {
   const { setVisible, bindings } = useModal();
 
-  const MockItem = ({ text }:any) => {
+  const MockItem = ({ text }: any) => {
     return (
       <Card css={{ h: "$20", $$cardColor: '$colors$primary' }}>
         <Card.Body>
@@ -33,29 +33,29 @@ export const DataCard: React.FC<DataCardProps> = ({
       </Card>
     );
   };
-  const removeHyperlinks = (text:string) => {
+  const removeHyperlinks = (text: string) => {
     // Regex to find all URLs /(https?:\/\/[^\s]+)/g;
     const regex = /\(https?:\/\/[^\s]+\)/g;
     return text.replace(regex, '');
   };
- const list = auditResult?.map((item:any)=>{
-  console.log(item?.value?.title);
-  // <Text size="$sm" color="$accents7" transform="uppercase" >
-  //               {title}
-  //             </Text>
-  return  <><Text
-  h2
-  size={18}
-  
-  weight="bold"
->
-  {item?.value?.title}
-</Text>
-<Text size="$sm" css={{ mb: 5 }}color="$accents7" >
-                {removeHyperlinks(item?.value?.description)}
-              </Text></>
+  const list = auditResult?.map((item: any) => {
+    console.log(item?.value?.title);
+    // <Text size="$sm" color="$accents7" transform="uppercase" >
+    //               {title}
+    //             </Text>
+    return <><Text
+      h2
+      size={18}
 
- })
+      weight="bold"
+    >
+      {item?.value?.title}
+    </Text>
+      <Text size="$sm" css={{ mb: 5 }} color="$accents7" >
+        {removeHyperlinks(item?.value?.description)}
+      </Text></>
+
+  })
 
   return (
     <><Card isHoverable variant="flat">
@@ -83,12 +83,12 @@ export const DataCard: React.FC<DataCardProps> = ({
             </Container>
           </Grid>
           <Grid xs={2}>
-            <Button auto color="primary" icon={<Scan set="bold" />} onPress={() => setVisible(true)}/>
+            <Button auto color="primary" icon={<Scan set="bold" />} onPress={() => setVisible(true)} />
           </Grid>
         </Grid.Container>
       </Card.Body>
     </Card>
-    <Modal
+      <Modal
         scroll
         width="600px"
         aria-labelledby="modal-title"
@@ -97,13 +97,13 @@ export const DataCard: React.FC<DataCardProps> = ({
       >
         <Modal.Header>
           <Text id="modal-title" size={24} css={{
-    textGradient: "45deg, $blue600 -20%, $green600 50%",
-  }}>
-          {title} & L7 RECOMMENDATIONS
+            textGradient: "45deg, $blue600 -20%, $green600 50%",
+          }}>
+            {title} & L7 RECOMMENDATIONS
           </Text>
         </Modal.Header>
         <Modal.Body>
-        {/* <Grid.Container gap={2} justify="center">
+          {/* <Grid.Container gap={2} justify="center">
         <Grid xs>
           <MockItem text="1 of 3" />
         </Grid>
@@ -114,10 +114,10 @@ export const DataCard: React.FC<DataCardProps> = ({
           <MockItem text="3 of 3" />
         </Grid>
       </Grid.Container> */}
-        
+
           {/* <Text id="modal-description"> */}
           {list}
-           {/* </Text> */}
+          {/* </Text> */}
         </Modal.Body>
         <Modal.Footer>
           <Button auto flat color="error" onPress={() => setVisible(false)}>
