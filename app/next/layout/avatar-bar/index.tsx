@@ -78,7 +78,7 @@ export const AvatarBar = () => {
         <Icon as={Setting} set="bold"></Icon>
       </Navbar.Item> */}
 
-      <UserPopover />
+      {/* <UserPopover /> */}
     </Navbar.Content>
   );
 };
