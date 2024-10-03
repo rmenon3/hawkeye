@@ -8,7 +8,7 @@
 
   <h2 align="center">NextUI Design Pro</h2>
   The best practices for React NextUI + Formik + zustand 🚀<br>
-  Build comfortable web applications
+  Build comfortable web applications.
   <p align="center">
     <br />
     <a href=""><strong>Demo »</strong></a>
