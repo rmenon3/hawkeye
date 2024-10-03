@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AtSign, Mail } from "react-feather";
 import { Password } from "react-iconly";
 
-export const Swipe = ({ emitClickEvent, showImage }: any) => {
+export const Swipe = ({ emitClickEvent, showImage, onSave=()=>{} }: any) => {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(false);
   // const [websiteUrl, setWebSiteUrl] = useState('');
@@ -46,13 +46,17 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
 
       </Card.Header>
       <Card.Body css={{ p: 0 }}>
-        {showImage && <Card.Image
+        {showImage && <div><Card.Image
           src="/cover1.png"
           width="100%"
           height="100%"
           objectFit="fill"
           alt="Swipe Background"
-        />}
+        />
+        <Button data-html2canvas-ignore="true" auto color="warning" shadow onPress={onSave}>
+                Save as PDF
+              </Button>
+        </div>}
         {!showImage && <video
         // ref={videoRef}
           src={require("../../public/l7Video.mp4")}

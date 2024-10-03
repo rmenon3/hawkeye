@@ -1,10 +1,11 @@
 import { Grid } from "@nextui-org/react";
+import html2pdf from "html2pdf.js"
 import { DataCard } from "@/views/dashboard/data-card";
 import { Swipe } from "@/views/dashboard/swiper";
 import { FillLineCharts } from "@/views/dashboard/charts/fill-line";
 import { DataTableCard } from '@/views/dashboard/data-table'
 import { PieCharts } from '@/views/dashboard/charts/pie'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { CardTransactions } from "./card-transactions";
 type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
@@ -28,6 +29,9 @@ export const DashboardPage = () => {
   const [customerData, setCustomerData] = useState<any>({});
   const [competitorData, setCompetitorData] = useState<any>({});
 
+
+  const insightsRef = useRef(null)
+
   // Event handler that matches the expected type
 
   const handleClickEvent = (data: any) => {
@@ -35,6 +39,10 @@ export const DashboardPage = () => {
     console.log(data);
     setValue(data);
     setSearch(true);
+  }
+
+  const handleSave = () => {
+    html2pdf(insightsRef.current);
   }
 
   const removeHyperlinks = (text:string) => {
@@ -262,9 +270,9 @@ export const DashboardPage = () => {
       </Grid>}
 
       {showWebsiteDashboard &&
-        <><Grid.Container gap={2} justify="flex-start">
-           <Grid xs={12} sm={12} md={12} lg={12}>
-           <Swipe showImage/>
+        <><Grid.Container ref={insightsRef} gap={2} justify="flex-start">
+           <Grid data-html2canvas-ignore="true" xs={12} sm={12} md={12} lg={12}>
+           <Swipe onSave={handleSave} showImage/>
             </Grid>
           <Grid xs={6} sm={6} md={3} lg={3}>
          
