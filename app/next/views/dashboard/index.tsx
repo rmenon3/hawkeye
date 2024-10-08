@@ -209,6 +209,10 @@ export const DashboardPage = () => {
       // If not, prepend 'https://'
       url = "https://" + url;
     }
+    if (/^(http?:\/\/)?www\./i.test(url)) {
+      // If not, prepend 'www.'
+      url = url.replace(/^(http)?/i, "https");
+    }
     // Check if 'www.' is present
     if (!/^(https?:\/\/)?www\./i.test(url)) {
       // If not, prepend 'www.'
