@@ -1,12 +1,11 @@
-import { Card, Col, Row, Button, Text, Modal, Input, Checkbox, Textarea, useInput } from "@nextui-org/react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { AtSign, Mail } from "react-feather";
-import { Password } from "react-iconly";
+import useShuffleWithInterval from "@/hooks/useShuffleWithInterval";
+import { Card, Col, Row, Button, Text, Modal, Input, Textarea, useInput } from "@nextui-org/react";
+import { useState } from "react";
+import { AtSign } from "react-feather";
 
 export const Swipe = ({ emitClickEvent, showImage }: any) => {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(false);
-  // const [websiteUrl, setWebSiteUrl] = useState('');
   const { value, reset, bindings } = useInput("");
   const handler = () => setVisible(true);
   const closeHandler = () => {
@@ -18,28 +17,9 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
   const names = [
     'Evaluating The Website Performance', 'Fetching the list of Competitors', 'Understanding website usage ', 'Ranking your website across Category, Country & Globally'
   ]
-  const [newName, setnewName] = useState("");
-
-  const shuffle = useCallback(() => {
-    const index = Math.floor(Math.random() * names.length);
-    setnewName(names[index]);
-  }, []);
-
-  useEffect(() => {
-    const intervalID = setInterval(shuffle, 1000);
-    return () => clearInterval(intervalID);
-  }, [shuffle])
-  // const videoRef = useRef(null);
-
-  // useEffect(() => {
-  //   const video:any = videoRef.current;
-  //   if (video) {
-  //     video.muted = true;
-  //     video.play().catch((error:any) => {
-  //       console.error('Video failed to autoplay:', error);
-  //     });
-  //   }
-  // }, []);
+  
+  const newName = useShuffleWithInterval(names);
+  
   return (
     <Card variant="flat" css={{ w: "100%", h: showImage ? "500px" : "100%" }}>
       <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
