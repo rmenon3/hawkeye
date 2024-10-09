@@ -24,6 +24,7 @@
     "react-aria": "^3.22.0",
     "react-bootstrap-icons": "^1.10.2",
     "react-chartjs-2": "^5.2.0",
+    "react-content-loader": "^7.0.2",
     "react-dom": "^18.3.1",
     "react-feather": "^2.0.10",
     "react-iconly": "^2.2.5",
