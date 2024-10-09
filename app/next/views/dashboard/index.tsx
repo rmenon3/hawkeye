@@ -264,7 +264,7 @@ export const DashboardPage = () => {
       {showWebsiteDashboard &&
         <><Grid.Container gap={2} justify="flex-start">
            <Grid xs={12} sm={12} md={12} lg={12}>
-           <Swipe showImage/>
+           <Swipe emitClickEvent={handleClickEvent} showImage/>
             </Grid>
           <Grid xs={6} sm={6} md={3} lg={3}>
          

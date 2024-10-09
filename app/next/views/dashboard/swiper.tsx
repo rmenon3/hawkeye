@@ -34,7 +34,6 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
           alt="Swipe Background"
         />}
         {!showImage && <video
-        // ref={videoRef}
           src={require("../../public/l7Video.mp4")}
           autoPlay
           muted
@@ -43,7 +42,7 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
 
         />}
       </Card.Body>
-      {!showImage && <Card.Footer
+      <Card.Footer
         isBlurred
         css={{
           position: "absolute",
@@ -110,7 +109,7 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
             </Button>
           </Modal.Footer>
         </Modal>
-      </Card.Footer>}
+      </Card.Footer>
     </Card>
   )
 }
