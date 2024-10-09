@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { Flex } from "@/components/flex";
 import { Scan } from "react-iconly";
-import ContentLoader, { Facebook } from "react-content-loader";
+import ContentLoader from "react-content-loader";
 
 const Loader = () => (
   <ContentLoader viewBox="0 0 380 70">

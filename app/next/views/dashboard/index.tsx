@@ -271,16 +271,14 @@ export const DashboardPage = () => {
           <DataCard
             title="PERFORMANCE"
             subText="Performance could not be measured at the moment"
-            trendText="+4"
             content={performaceData}
-            auditResult={pAuditResults as []} />
+            auditResult={pAuditResults as []}
+            />
 
         </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
-              status="error"
               title="ACCESSIBILITY"
               subText="Accessibility could not be measured at the moment"
-              trendText="-1,012"
               content={accessibilityData}
               auditResult={accAuditResults as []} 
                />
@@ -288,14 +286,12 @@ export const DashboardPage = () => {
             <DataCard
               title="SEO"
               subText="SEO could not be measured at the moment"
-              trendText="+4%"
               content={seoData}
               auditResult={seoAuditResults as []}  />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SECURITY"
               subText="Security could not be measured at the moment"
-              trendText="+300"
               content={securityData} 
               auditResult={bestPracticesAuditResults as []} />
           </Grid>
