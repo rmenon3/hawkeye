@@ -11,23 +11,31 @@ import {
 } from "@nextui-org/react";
 import { Flex } from "@/components/flex";
 import { Scan } from "react-iconly";
+import ContentLoader, { Facebook } from "react-content-loader";
+
+const Loader = () => (
+  <ContentLoader viewBox="0 0 380 70">
+    <rect x="0" y="0" rx="5" ry="5" width="350" height="15" />
+    <rect x="0" y="17" rx="4" ry="4" width="300" height="13" />
+    <rect x="0" y="40" rx="3" ry="3" width="250" height="10" />
+    <rect x="0" y="40" rx="3" ry="3" width="250" height="10" />
+  </ContentLoader>
+);
 
 export interface DataCardProps {
-  status?: "success" | "error";
   title: string;
   subText: string;
   content: number;
   auditResult?: [];
-  trendText?: string;
+  loading?: boolean;
 }
 
 export const DataCard: React.FC<DataCardProps> = ({
-  status = "success",
   title,
   subText,
   content,
   auditResult,
-  trendText,
+  loading,
 }) => {
   const { setVisible, bindings } = useModal();
 
@@ -49,6 +57,16 @@ export const DataCard: React.FC<DataCardProps> = ({
       </>
     );
   });
+
+  if (loading) {
+    return (
+      <Card isHoverable variant="flat">
+        <Card.Body>
+          <Loader />
+        </Card.Body>
+      </Card>
+    );
+  }
 
   return (
     <>
