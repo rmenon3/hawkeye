@@ -12,7 +12,7 @@ export const DashboardPage = () => {
 
   const [value, setValue] = useState<string>('');
   const [data, setData] = useState(null)
-  const [performaceData, setPerformanceData] = useState(0);
+  const [perfomance, setPerformanceData] = useState({apiState: 'initial', data: 0});
   const [pAuditResults, setpAuditResults] = useState([]);
   const [accAuditResults, setAccAuditResults] = useState([]);
   const [seoAuditResults, setSeoAuditResults] = useState([]);
@@ -32,9 +32,11 @@ export const DashboardPage = () => {
 
   const handleClickEvent = (data: any) => {
     // click event object, 'Hello from child'
+    setShowWebsiteDashboard(true);
     console.log(data);
     setValue(data);
     setSearch(true);
+    setPerformanceData({apiState: 'loading', data: 0});
   }
 
   const removeHyperlinks = (text:string) => {
@@ -93,7 +95,7 @@ export const DashboardPage = () => {
       })
     };
     setLoading(true);
-    setPerformanceData(0);
+    setPerformanceData({...perfomance, data: 0});
     setAccessibilityData(0);
     setSecurityData(0);
     setSEOData(0);
@@ -128,12 +130,12 @@ export const DashboardPage = () => {
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'performance');
 
        
-        setPerformanceData(pScore)
+        setPerformanceData({apiState: 'success',data: pScore})
         
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setPerformanceData(0);
+        setPerformanceData({apiState: 'error',data: 0})
       });
      
       fetch('/api/accessibilityData?category=accessibility&strategy=desktop&url=' + currentUrl)
@@ -258,7 +260,6 @@ export const DashboardPage = () => {
     <>
       {!showWebsiteDashboard && <Grid xs={12} lg={12}>
         <Swipe emitClickEvent={handleClickEvent} />
-        {/* <VideoPlayer /> */}
       </Grid>}
 
       {showWebsiteDashboard &&
@@ -271,7 +272,8 @@ export const DashboardPage = () => {
           <DataCard
             title="PERFORMANCE"
             subText="Performance could not be measured at the moment"
-            content={performaceData}
+            content={perfomance.data}
+            loading={perfomance.apiState == "loading"}
             auditResult={pAuditResults as []}
             />
 
