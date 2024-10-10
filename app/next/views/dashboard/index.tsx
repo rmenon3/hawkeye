@@ -8,18 +8,20 @@ import React, { useEffect, useState } from "react";
 import { CardTransactions } from "./card-transactions";
 type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
+type APiState<T> = {status: 'initial' | 'loading' | 'success' | 'error', data: T}
+
 export const DashboardPage = () => {
 
   const [value, setValue] = useState<string>('');
   const [data, setData] = useState(null)
-  const [perfomance, setPerformanceData] = useState({apiState: 'initial', data: 0});
+  const [perfomance, setPerformanceData] = useState<APiState<number>>({status: 'initial', data: 0});
   const [pAuditResults, setpAuditResults] = useState([]);
   const [accAuditResults, setAccAuditResults] = useState([]);
   const [seoAuditResults, setSeoAuditResults] = useState([]);
   const [bestPracticesAuditResults, setBestPracticesAuditResults] = useState([]);
-  const [accessibilityData, setAccessibilityData] = useState(0);
-  const [securityData, setSecurityData] = useState(0);
-  const [seoData, setSEOData] = useState(0);
+  const [accessibilityData, setAccessibilityData] = useState<APiState<number>>({status: 'initial', data: 0});
+  const [securityData, setSecurityData] = useState<APiState<number>>({status: 'initial', data: 0});
+  const [seoData, setSEOData] = useState<APiState<number>>({status: 'initial', data: 0});
   const [pieData, setPieData] = useState(0);
   const [isLoading, setLoading] = useState(true)
   const [showWebsiteDashboard, setShowWebsiteDashboard] = useState(false)
@@ -36,7 +38,7 @@ export const DashboardPage = () => {
     console.log(data);
     setValue(data);
     setSearch(true);
-    setPerformanceData({apiState: 'loading', data: 0});
+    setPerformanceData({status: 'loading', data: 0});
   }
 
   const removeHyperlinks = (text:string) => {
@@ -96,9 +98,9 @@ export const DashboardPage = () => {
     };
     setLoading(true);
     setPerformanceData({...perfomance, data: 0});
-    setAccessibilityData(0);
-    setSecurityData(0);
-    setSEOData(0);
+    setAccessibilityData({...perfomance, data: 0});
+    setSecurityData({...perfomance, data: 0});
+    setSEOData({...perfomance, data: 0});
     fetch('https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=AIzaSyBByZoF1yKFlBBhqnzLaVA0UCCxRewK2oU', requestOptions)
       .then(async response => {
         const isJson = response.headers.get('content-type')?.includes('application/json');
@@ -130,12 +132,12 @@ export const DashboardPage = () => {
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'performance');
 
        
-        setPerformanceData({apiState: 'success',data: pScore})
+        setPerformanceData({status: 'success',data: pScore})
         
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setPerformanceData({apiState: 'error',data: 0})
+        setPerformanceData({status: 'error',data: 0})
       });
      
       fetch('/api/accessibilityData?category=accessibility&strategy=desktop&url=' + currentUrl)
@@ -147,12 +149,12 @@ export const DashboardPage = () => {
         // auditResults(data?.lighthouseResult?.audits,'accessibility');
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'accessibility');
         
-        setAccessibilityData(accScore)
+        setAccessibilityData({status: 'success', data: accScore})
        
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setAccessibilityData(0);
+        setAccessibilityData({status: 'error', data: 0})
       });
       // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=best-practices&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
       // fetch('/api/customerData?domain='+currentUrl)
@@ -163,13 +165,13 @@ export const DashboardPage = () => {
         let seoScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.seo?.score * 100):0;
         if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'seo');
         // auditResults(data?.lighthouseResult?.audits,'seo');
-        setSEOData(seoScore)
+        setSEOData({data: seoScore, status: 'success'});
         // setData(data);
         // setLoading(false);
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setSEOData(0)
+        setSEOData({data: 0, status: 'error'});
       });
       fetch('/api/secData?category='+finalSecUrl+currentUrl)
       .then((res) => res.json())
@@ -185,14 +187,14 @@ export const DashboardPage = () => {
         // auditResults(data?.lighthouseResult?.audits);
         // setPerformanceData(pScore)
         // setAccessibilityData(accScore)
-        setSecurityData(secScore)
+        setSecurityData({data: secScore, status: 'success'});
         // setSEOData(seoScore)
         // setData(data);
         // setLoading(false);
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setSecurityData(0)
+        setSecurityData({data: 0, status: 'error'});
       });
    
 
@@ -273,7 +275,7 @@ export const DashboardPage = () => {
             title="PERFORMANCE"
             subText="Performance could not be measured at the moment"
             content={perfomance.data}
-            loading={perfomance.apiState == "loading"}
+            loading={perfomance.status == "loading"}
             auditResult={pAuditResults as []}
             />
 
@@ -281,21 +283,26 @@ export const DashboardPage = () => {
             <DataCard
               title="ACCESSIBILITY"
               subText="Accessibility could not be measured at the moment"
-              content={accessibilityData}
+              content={accessibilityData.data}
               auditResult={accAuditResults as []} 
+              loading={accessibilityData.status === 'loading'}
                />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SEO"
               subText="SEO could not be measured at the moment"
-              content={seoData}
-              auditResult={seoAuditResults as []}  />
+              content={seoData.data}
+              auditResult={seoAuditResults as []}
+              loading={seoData.status === 'loading'}
+              />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SECURITY"
               subText="Security could not be measured at the moment"
-              content={securityData} 
-              auditResult={bestPracticesAuditResults as []} />
+              content={securityData.data} 
+              auditResult={bestPracticesAuditResults as []}
+              loading={securityData.status === 'loading'}
+              />
           </Grid>
           <Grid xs={12} lg={6}>
             <CardTransactions customerData={customerData} />
