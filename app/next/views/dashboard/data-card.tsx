@@ -14,11 +14,14 @@ import { Scan } from "react-iconly";
 import ContentLoader from "react-content-loader";
 
 const Loader = () => (
-  <ContentLoader viewBox="0 0 380 70">
+  <ContentLoader
+    viewBox="0 0 380 70"
+    backgroundColor="#f3f3f3"
+    foregroundColor="#ded9d9"
+  >
     <rect x="0" y="0" rx="5" ry="5" width="350" height="15" />
     <rect x="0" y="17" rx="4" ry="4" width="300" height="13" />
-    <rect x="0" y="40" rx="3" ry="3" width="250" height="10" />
-    <rect x="0" y="40" rx="3" ry="3" width="250" height="10" />
+    <rect  y="35"  rx="4" width="300" height="13" />
   </ContentLoader>
 );
 
