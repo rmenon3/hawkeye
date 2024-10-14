@@ -41,12 +41,6 @@ export const DashboardPage = () => {
     setPerformanceData({status: 'loading', data: 0});
   }
 
-  const removeHyperlinks = (text:string) => {
-    // Regex to find all URLs
-    const regex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(regex, '');
-  };
-
   const auditResults = (data: any,type:string) => {
     // click event object, 'Hello from child'
    
