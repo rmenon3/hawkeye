@@ -10,18 +10,30 @@ type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
 type APiState<T> = {status: 'initial' | 'loading' | 'success' | 'error', data: T}
 
+const apiInitialState = { status: "initial", data: 0, audit: []as [] };
+const apiLoadingState = {status: "loading", data: 0, audit: [] as []}
+const apiErrorState = {status: "error", data: 0, audit: [] as []}
+
+const initialData = {
+  perfomance: apiInitialState,
+  accessibility: apiInitialState,
+  security: apiInitialState,
+  seo: apiInitialState,
+};
+
+const loadingState = {
+  perfomance: apiLoadingState,
+  accessibility: apiLoadingState,
+  security: apiLoadingState,
+  seo: apiLoadingState,
+}
+
 export const DashboardPage = () => {
+
+  const [apiData, setAPIData] = useState(initialData);
 
   const [value, setValue] = useState<string>('');
   const [data, setData] = useState(null)
-  const [perfomance, setPerformanceData] = useState<APiState<number>>({status: 'initial', data: 0});
-  const [pAuditResults, setpAuditResults] = useState([]);
-  const [accAuditResults, setAccAuditResults] = useState([]);
-  const [seoAuditResults, setSeoAuditResults] = useState([]);
-  const [bestPracticesAuditResults, setBestPracticesAuditResults] = useState([]);
-  const [accessibilityData, setAccessibilityData] = useState<APiState<number>>({status: 'initial', data: 0});
-  const [securityData, setSecurityData] = useState<APiState<number>>({status: 'initial', data: 0});
-  const [seoData, setSEOData] = useState<APiState<number>>({status: 'initial', data: 0});
   const [pieData, setPieData] = useState(0);
   const [isLoading, setLoading] = useState(true)
   const [showWebsiteDashboard, setShowWebsiteDashboard] = useState(false)
@@ -38,33 +50,24 @@ export const DashboardPage = () => {
     console.log(data);
     setValue(data);
     setSearch(true);
-    setPerformanceData({status: 'loading', data: 0});
+    setAPIData(loadingState);
   }
 
-  const auditResults = (data: any,type:string) => {
-    // click event object, 'Hello from child'
-   
-    const improvements = Object.entries(data).map(([key,value])=>{
-       let ckey:any = key;
-      return {value}
-    })
-    console.log(improvements)
-    const improvementList = improvements.filter((data:any)=>{
-      if(!data.value?.score){
+  const getAuditResult = (data: any) => {
+    const audits = data?.lighthouseResult?.audits;
+    if (!audits) return [] as [];
+    const improvements = Object.entries(audits).map(([key, value]) => {
+      let ckey: any = key;
+      return { value };
+    });
+    return improvements.filter((data: any) => {
+      if (!data.value?.score) {
         return data.value;
       }
-    }) as []
-  console.log(improvementList)
-  if(type==='performance'){
-    setpAuditResults(improvementList);
-  }else if(type == 'accessibility'){
-  setAccAuditResults(improvementList);
-  }else if(type == 'seo'){
-    setSeoAuditResults(improvementList);
-  }else if (type == 'best-practices'){
-    setBestPracticesAuditResults(improvementList);
-  }
-}
+    }) as [];
+  };
+
+
   const debounce = (callback: { (): void; (): void; }, delay: number | undefined) => {
     let timeoutId: string | number | NodeJS.Timeout | undefined;
 
@@ -91,10 +94,6 @@ export const DashboardPage = () => {
       })
     };
     setLoading(true);
-    setPerformanceData({...perfomance, data: 0});
-    setAccessibilityData({...perfomance, data: 0});
-    setSecurityData({...perfomance, data: 0});
-    setSEOData({...perfomance, data: 0});
     fetch('https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=AIzaSyBByZoF1yKFlBBhqnzLaVA0UCCxRewK2oU', requestOptions)
       .then(async response => {
         const isJson = response.headers.get('content-type')?.includes('application/json');
@@ -122,16 +121,22 @@ export const DashboardPage = () => {
       .then((data:any) => {
         // console.log(data);
         setShowWebsiteDashboard(true);
-        let pScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.performance?.score * 100):0;
-        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'performance');
+        let pScore = data?.lighthouseResult
+          ? Math.round(
+              data?.lighthouseResult?.categories?.performance?.score * 100
+            )
+          : 0;
+        const audit = getAuditResult(data);
 
-       
-        setPerformanceData({status: 'success',data: pScore})
+        setAPIData((state) => ({
+          ...state,
+          perfomance: { status: "success", data: pScore, audit },
+        }));
         
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setPerformanceData({status: 'error',data: 0})
+        setAPIData(state => ({...state, perfomance: apiErrorState}));
       });
      
       fetch('/api/accessibilityData?category=accessibility&strategy=desktop&url=' + currentUrl)
@@ -140,15 +145,21 @@ export const DashboardPage = () => {
        
         let accScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100):0;
         
-        // auditResults(data?.lighthouseResult?.audits,'accessibility');
-        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'accessibility');
+        const audit = getAuditResult(data);
+
+        setAPIData((state) => ({
+          ...state,
+          accessibility: { status: "success", data: accScore, audit },
+        }));
         
-        setAccessibilityData({status: 'success', data: accScore})
        
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setAccessibilityData({status: 'error', data: 0})
+        setAPIData((state) => ({
+          ...state,
+          accessibility:apiErrorState,
+        }));
       });
       // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=best-practices&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
       // fetch('/api/customerData?domain='+currentUrl)
@@ -157,38 +168,36 @@ export const DashboardPage = () => {
       .then((data:any) => {
        
         let seoScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.seo?.score * 100):0;
-        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'seo');
-        // auditResults(data?.lighthouseResult?.audits,'seo');
-        setSEOData({data: seoScore, status: 'success'});
-        // setData(data);
-        // setLoading(false);
+      
+        const audit = getAuditResult(data);
+
+        setAPIData((state) => ({
+          ...state,
+          seo: { status: "success", data: seoScore, audit },
+        }));
       }).catch(error => {
-        // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setSEOData({data: 0, status: 'error'});
+        setAPIData((state) => ({
+          ...state,
+          seo:apiErrorState,
+        }));
       });
       fetch('/api/secData?category='+finalSecUrl+currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
-        // console.log(data);
-        // setShowWebsiteDashboard(true);
-        // let pScore = Math.round(data?.lighthouseResult?.categories?.performance?.score * 100);
-        // let accScore = Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100);
         let secScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100):0;
-        if(data?.lighthouseResult?.audits)auditResults(data?.lighthouseResult?.audits,'best-practices');
-        
-        // let seoScore = Math.round(data?.lighthouseResult?.categories?.seo?.score * 100);
-        // auditResults(data?.lighthouseResult?.audits);
-        // setPerformanceData(pScore)
-        // setAccessibilityData(accScore)
-        setSecurityData({data: secScore, status: 'success'});
-        // setSEOData(seoScore)
-        // setData(data);
-        // setLoading(false);
+        const audit = getAuditResult(data);
+        setAPIData((state) => ({
+          ...state,
+          security: { status: "success", data: secScore, audit },
+        }));
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
-        setSecurityData({data: 0, status: 'error'});
+        setAPIData((state) => ({
+          ...state,
+          security:apiErrorState,
+        }));
       });
    
 
@@ -268,34 +277,34 @@ export const DashboardPage = () => {
           <DataCard
             title="PERFORMANCE"
             subText="Performance could not be measured at the moment"
-            content={perfomance.data}
-            loading={perfomance.status == "loading"}
-            auditResult={pAuditResults as []}
+            content={apiData['perfomance'].data}
+            loading={apiData['perfomance'].status == "loading"}
+            auditResult={apiData['perfomance'].audit}
             />
 
         </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="ACCESSIBILITY"
               subText="Accessibility could not be measured at the moment"
-              content={accessibilityData.data}
-              auditResult={accAuditResults as []} 
-              loading={accessibilityData.status === 'loading'}
+              content={apiData['accessibility'].data}
+              auditResult={apiData['accessibility'].audit} 
+              loading={apiData['accessibility'].status === 'loading'}
                />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SEO"
               subText="SEO could not be measured at the moment"
-              content={seoData.data}
-              auditResult={seoAuditResults as []}
-              loading={seoData.status === 'loading'}
+              content={apiData["seo"].data}
+              auditResult={apiData["seo"].audit}
+              loading={apiData["seo"].status === 'loading'}
               />
           </Grid><Grid xs={6} sm={6} md={3} lg={3}>
             <DataCard
               title="SECURITY"
               subText="Security could not be measured at the moment"
-              content={securityData.data} 
-              auditResult={bestPracticesAuditResults as []}
-              loading={securityData.status === 'loading'}
+              content={apiData["security"].data} 
+              auditResult={apiData["security"].audit}
+              loading={apiData["security"].status === 'loading'}
               />
           </Grid>
           <Grid xs={12} lg={6}>
