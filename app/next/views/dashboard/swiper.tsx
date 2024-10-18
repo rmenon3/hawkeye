@@ -3,7 +3,7 @@ import { Card, Col, Row, Button, Text, Modal, Input, Textarea, useInput } from "
 import { useState } from "react";
 import { AtSign } from "react-feather";
 
-export const Swipe = ({ emitClickEvent, showImage }: any) => {
+export const Swipe = ({ emitClickEvent, downloadPDF, showImage }: any) => {
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(false);
   const { value, reset, bindings } = useInput("");
@@ -61,6 +61,13 @@ export const Swipe = ({ emitClickEvent, showImage }: any) => {
             {progress && <Text b color="black">
               {newName}
             </Text>}
+          </Col>
+          <Col>
+          <Row justify="flex-end">
+          <Button auto color="warning" shadow onPress={downloadPDF}>
+               Download as PDF
+              </Button>
+              </Row>
           </Col>
           <Col>
             <Row justify="flex-end">

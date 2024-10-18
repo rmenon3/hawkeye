@@ -4,8 +4,9 @@ import { Swipe } from "@/views/dashboard/swiper";
 import { FillLineCharts } from "@/views/dashboard/charts/fill-line";
 import { DataTableCard } from '@/views/dashboard/data-table'
 import { PieCharts } from '@/views/dashboard/charts/pie'
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { CardTransactions } from "./card-transactions";
+import html2pdf from "html2pdf.js";
 type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
 type APiState<T> = {status: 'initial' | 'loading' | 'success' | 'error', data: T}
@@ -41,6 +42,7 @@ export const DashboardPage = () => {
   const [monthlyData, setMonthlyData] = useState<any>({});
   const [customerData, setCustomerData] = useState<any>({});
   const [competitorData, setCompetitorData] = useState<any>({});
+  const pdfRef = useRef(null);
 
   // Event handler that matches the expected type
 
@@ -51,6 +53,12 @@ export const DashboardPage = () => {
     setValue(data);
     setSearch(true);
     setAPIData(loadingState);
+  }
+
+  const downloadPDF = async () => {
+    console.log('Downloading pdf')
+    const html2pdf2 = (await import("html2pdf.js")).default
+    if(pdfRef.current) html2pdf2(pdfRef.current);
   }
 
   const getAuditResult = (data: any) => {
@@ -262,15 +270,15 @@ export const DashboardPage = () => {
 
   return (
 
-    <>
+    <div ref={pdfRef}>
       {!showWebsiteDashboard && <Grid xs={12} lg={12}>
-        <Swipe emitClickEvent={handleClickEvent} />
+        <Swipe emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} />
       </Grid>}
 
       {showWebsiteDashboard &&
         <><Grid.Container gap={2} justify="flex-start">
            <Grid xs={12} sm={12} md={12} lg={12}>
-           <Swipe emitClickEvent={handleClickEvent} showImage/>
+           <Swipe emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} showImage/>
             </Grid>
           <Grid xs={6} sm={6} md={3} lg={3}>
          
@@ -322,6 +330,6 @@ export const DashboardPage = () => {
           
         </Grid.Container>
         </>}
-    </>
+    </div>
   );
 };
