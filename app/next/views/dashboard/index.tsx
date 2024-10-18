@@ -57,8 +57,14 @@ export const DashboardPage = () => {
 
   const downloadPDF = async () => {
     console.log('Downloading pdf')
+    var opt = {
+      margin:       0,
+      filename:     'myfile.pdf',
+      html2canvas:  { scale: 1 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
     const html2pdf2 = (await import("html2pdf.js")).default
-    if(pdfRef.current) html2pdf2(pdfRef.current);
+    if(pdfRef.current) html2pdf2(pdfRef.current, opt);
   }
 
   const getAuditResult = (data: any) => {
@@ -271,14 +277,14 @@ export const DashboardPage = () => {
   return (
 
     <div ref={pdfRef}>
-      {!showWebsiteDashboard && <Grid xs={12} lg={12}>
-        <Swipe emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} />
+      {!showWebsiteDashboard && <Grid data-html2canvas-ignore="true" xs={12} lg={12}>
+        <Swipe  emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} />
       </Grid>}
 
       {showWebsiteDashboard &&
         <><Grid.Container gap={2} justify="flex-start">
-           <Grid xs={12} sm={12} md={12} lg={12}>
-           <Swipe emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} showImage/>
+           <Grid data-html2canvas-ignore="true" xs={12} sm={12} md={12} lg={12}>
+           <Swipe  emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} showImage/>
             </Grid>
           <Grid xs={6} sm={6} md={3} lg={3}>
          
