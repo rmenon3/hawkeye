@@ -12,8 +12,10 @@ import {
 import { Flex } from "@/components/flex";
 import { Scan } from "react-iconly";
 import ContentLoader from "react-content-loader";
+import { DoughNut } from "./charts/doughnut";
+import { scrollToSection } from "./utility";
 
-const Loader = () => (
+export const Loader = () => (
   <ContentLoader
     viewBox="0 0 380 70"
     speed={1}
@@ -41,26 +43,6 @@ export const DataCard: React.FC<DataCardProps> = ({
   auditResult,
   loading,
 }) => {
-  const { setVisible, bindings } = useModal();
-
-  const removeHyperlinks = (text: string) => {
-    // Regex to find all URLs /(https?:\/\/[^\s]+)/g;
-    const regex = /\(https?:\/\/[^\s]+\)/g;
-    return text.replace(regex, "");
-  };
-  const list = auditResult?.map((item: any) => {
-    console.log(item?.value?.title);
-    return (
-      <>
-        <Text h2 size={18} weight="bold">
-          {item?.value?.title}
-        </Text>
-        <Text size="$sm" css={{ mb: 5 }} color="$accents7">
-          {removeHyperlinks(item?.value?.description)}
-        </Text>
-      </>
-    );
-  });
 
   if (loading) {
     return (
@@ -76,13 +58,12 @@ export const DataCard: React.FC<DataCardProps> = ({
     <>
       <Card isHoverable variant="flat">
         <Card.Body>
-          <Grid.Container>
-            <Grid xs={10}>
+          <Grid.Container  onClick={() => scrollToSection(title)}>
+            <Grid xs={5}>
               <Container fluid>
                 <Text size="$sm" color="$accents7" transform="uppercase">
                   {title}
                 </Text>
-                {content >= 0 ? <Text h3>{content}</Text> : <Loading></Loading>}
                 {content <= 0 && (
                   <Flex>
                     <Text size="$xs" color="$accents7">
@@ -92,42 +73,28 @@ export const DataCard: React.FC<DataCardProps> = ({
                 )}
               </Container>
             </Grid>
+            <Grid xs={5}>
+            {content >= 0 ?
+                <><DoughNut content={{
+                  colors: [
+                    'Red',
+                    'Blue',
+                    'Yellow'
+                  ],
+                  label: title, doughData: [content, 100 - content]
+                }} /> <br /></>
+                : <Loading></Loading>}
+                </Grid>
             <Grid xs={2}>
               <Button
                 auto
                 color="primary"
                 icon={<Scan set="bold" />}
-                onPress={() => setVisible(true)}
+                onClick={() => scrollToSection(title)}
               />
             </Grid>
           </Grid.Container>
         </Card.Body>
       </Card>
-      <Modal
-        scroll
-        width="600px"
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-        {...bindings}
-      >
-        <Modal.Header>
-          <Text
-            id="modal-title"
-            size={24}
-            css={{
-              textGradient: "45deg, $blue600 -20%, $green600 50%",
-            }}
-          >
-            {title} & L7 RECOMMENDATIONS
-          </Text>
-        </Modal.Header>
-        <Modal.Body>{list}</Modal.Body>
-        <Modal.Footer>
-          <Button auto flat color="error" onPress={() => setVisible(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
-  );
-};
+  )};

@@ -1,4 +1,4 @@
-import { Grid } from "@nextui-org/react";
+import { Grid, Button, Dropdown } from '@nextui-org/react';
 import { DataCard } from "@/views/dashboard/data-card";
 import { Swipe } from "@/views/dashboard/swiper";
 import { FillLineCharts } from "@/views/dashboard/charts/fill-line";
@@ -6,10 +6,12 @@ import { DataTableCard } from '@/views/dashboard/data-table'
 import { PieCharts } from '@/views/dashboard/charts/pie'
 import React, { useEffect, useState, useRef } from "react";
 import { CardTransactions } from "./card-transactions";
+import { validateURl, validUrls } from "./utility";
+import { AuditList } from "./audit-list";
 import html2pdf from "html2pdf.js";
 type FormElement = HTMLInputElement | HTMLTextAreaElement;
 
-type APiState<T> = {status: 'initial' | 'loading' | 'success' | 'error', data: T}
+type APiState<T> = { status: 'initial' | 'loading' | 'success' | 'error', data: T }
 
 const apiInitialState = { status: "initial", data: 0, audit: []as [] };
 const apiLoadingState = {status: "loading", data: 0, audit: [] as []}
@@ -42,6 +44,7 @@ export const DashboardPage = () => {
   const [monthlyData, setMonthlyData] = useState<any>({});
   const [customerData, setCustomerData] = useState<any>({});
   const [competitorData, setCompetitorData] = useState<any>({});
+  const [view, setView] =  useState<string>('desktop');
   const pdfRef = useRef(null);
 
   // Event handler that matches the expected type
@@ -96,10 +99,10 @@ export const DashboardPage = () => {
   const debouncedFunction = debounce(() => {
     const currentUrl = validUrls(value);
     console.log("Current Url", currentUrl)
-    const finalUrl = 'performance&strategy=desktop&url=';
-    const finalAccUrl = 'accessibility&strategy=desktop&url=';
-    const finalSeoUrl = 'seo&strategy=desktop&url=';
-    const finalSecUrl = 'best-practices&strategy=desktop&url=';
+    const finalUrl = 'performance&strategy='+view+'&url=';
+    const finalAccUrl = 'accessibility&strategy='+view+'&url=';
+    const finalSeoUrl = 'seo&strategy='+view+'&url=';
+    const finalSecUrl = 'best-practices&strategy='+view+'&url=';
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -127,10 +130,10 @@ export const DashboardPage = () => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
       });
-    
+
     console.log(finalUrl)
-   
-      fetch('/api/customerData?category='+finalUrl+currentUrl)
+
+    fetch('/api/customerData?category=' + finalUrl + currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
         // console.log(data);
@@ -146,17 +149,17 @@ export const DashboardPage = () => {
           ...state,
           perfomance: { status: "success", data: pScore, audit },
         }));
-        
+
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
         setAPIData(state => ({...state, perfomance: apiErrorState}));
       });
-     
-      fetch('/api/accessibilityData?category=accessibility&strategy=desktop&url=' + currentUrl)
+
+    fetch('/api/accessibilityData?category='+ finalAccUrl + currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
-       
+
         let accScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.accessibility?.score * 100):0;
         
         const audit = getAuditResult(data);
@@ -165,8 +168,8 @@ export const DashboardPage = () => {
           ...state,
           accessibility: { status: "success", data: accScore, audit },
         }));
-        
-       
+
+
       }).catch(error => {
         // this.setState({ errorMessage: error.toString() });category=accessibility&category=best-practices&
         console.error('There was an error!', error);
@@ -175,12 +178,12 @@ export const DashboardPage = () => {
           accessibility:apiErrorState,
         }));
       });
-      // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=best-practices&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
-      // fetch('/api/customerData?domain='+currentUrl)
-      fetch('/api/seoData?category='+finalSeoUrl+currentUrl)
+    // fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?category=best-practices&category=seo&strategy=desktop&url=' + currentUrl + '&alt=json')
+    // fetch('/api/customerData?domain='+currentUrl)
+    fetch('/api/seoData?category=' + finalSeoUrl + currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
-       
+
         let seoScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories?.seo?.score * 100):0;
       
         const audit = getAuditResult(data);
@@ -196,7 +199,7 @@ export const DashboardPage = () => {
           seo:apiErrorState,
         }));
       });
-      fetch('/api/secData?category='+finalSecUrl+currentUrl)
+    fetch('/api/secData?category=' + finalSecUrl + currentUrl)
       .then((res) => res.json())
       .then((data:any) => {
         let secScore = data?.lighthouseResult ? Math.round(data?.lighthouseResult?.categories["best-practices"]?.score * 100):0;
@@ -213,128 +216,135 @@ export const DashboardPage = () => {
           security:apiErrorState,
         }));
       });
-   
+      
 
   }, 0);
 
- 
-
-  const validateURl = (value: string) => {
-    return value.match(/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/);
-  };
-
-  const validUrls = (url: string) => {
-   
-    // Check if the URL starts with 'http://' or 'https://'
-    if (!/^https?:\/\//i.test(url)) {
-      // If not, prepend 'https://'
-      url = "https://" + url;
-    }
-    // Check if 'www.' is present
-    if (!/^(https?:\/\/)?www\./i.test(url)) {
-      // If not, prepend 'www.'
-      url = url.replace(/^(https?:\/\/)?/i, "https://www.");
-    }
-
-  
-    return url;
-  }
-
-
-
   useEffect(() => {
     if (search && validateURl(value)) {
-
+    
       // setShowWebsiteDashboard(true);
       const currentUrl = validUrls(value);
-     
+
       debouncedFunction();
       fetch('/api/competitorData?domain=' + currentUrl)
         .then(res => res.json())
         .then((data: any) => {
-          
+
           setCompetitorData(data);
-          
+
         })
       fetch('https://api.allorigins.win/get?url=http://data.similarweb.com/api/v1/data?domain=' + currentUrl)
         .then((res) => res.json())
         .then((data) => {
-          
+
           setCustomerData(JSON.parse(data.contents));
           setMonthlyData(JSON.parse(data.contents).EstimatedMonthlyVisits);
           // setCountryImage("https://flagsapi.com/"+data.CountryRank.CountryCode+"/shiny/64.png")
         })
-  
+
       setSearch(false);
     } else {
-     
+      debouncedFunction();
     }
 
-   
-  }, [search, value])
 
+  }, [search, value, view])
 
+const handleView = (view:any) => {
+  setAPIData((state) => ({
+    ...state,
+    security: { status: "loading", data: 0, audit:[] },
+    seo:{ status: "loading", data: 0,audit:[] },
+    accessibility: { status: "loading", data: 0,audit:[] },
+    perfomance: { status: "loading", data: 0,audit:[] },
+  }));
+  setView(view);
+}
   return (
 
     <div ref={pdfRef}>
       {!showWebsiteDashboard && <Grid data-html2canvas-ignore="true" xs={12} lg={12}>
-        <Swipe  emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} />
-      </Grid>}
+      <Swipe  emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} />
+    </Grid>}
 
       {showWebsiteDashboard &&
         <><Grid.Container gap={2} justify="flex-start">
-           <Grid data-html2canvas-ignore="true" xs={12} sm={12} md={12} lg={12}>
-           <Swipe  emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} showImage/>
+        <Grid data-html2canvas-ignore="true" xs={12} sm={12} md={12} lg={12}>
+        <Swipe  emitClickEvent={handleClickEvent} downloadPDF={downloadPDF} showImage/>
+        </Grid>
+            <Grid xs={12} lg={12}>
+              <Dropdown>
+                <Dropdown.Button flat>{view}</Dropdown.Button>
+                <Dropdown.Menu
+                  onAction={handleView}
+                >
+                  <Dropdown.Item key="mobile">Mobile</Dropdown.Item>
+                  {/* <Dropdown.Item key="tablet">Tablet</Dropdown.Item> */}
+                  <Dropdown.Item key="desktop">Desktop</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Grid>
-          <Grid xs={6} sm={6} md={3} lg={3}>
-         
-          <DataCard
-            title="PERFORMANCE"
-            subText="Performance could not be measured at the moment"
-            content={apiData['perfomance'].data}
-            loading={apiData['perfomance'].status == "loading"}
-            auditResult={apiData['perfomance'].audit}
-            />
+            <Grid xs={6} sm={6} md={3} lg={3}>
 
-        </Grid><Grid xs={6} sm={6} md={3} lg={3}>
-            <DataCard
-              title="ACCESSIBILITY"
-              subText="Accessibility could not be measured at the moment"
-              content={apiData['accessibility'].data}
-              auditResult={apiData['accessibility'].audit} 
-              loading={apiData['accessibility'].status === 'loading'}
-               />
-          </Grid><Grid xs={6} sm={6} md={3} lg={3}>
-            <DataCard
-              title="SEO"
-              subText="SEO could not be measured at the moment"
-              content={apiData["seo"].data}
-              auditResult={apiData["seo"].audit}
-              loading={apiData["seo"].status === 'loading'}
+              <DataCard
+                title="PERFORMANCE"
+                subText="Performance could not be measured at the moment"
+                content={apiData['perfomance'].data}
+                loading={apiData['perfomance'].status == "loading"}
+                auditResult={apiData['perfomance'].audit}
               />
-          </Grid><Grid xs={6} sm={6} md={3} lg={3}>
-            <DataCard
-              title="SECURITY"
-              subText="Security could not be measured at the moment"
-              content={apiData["security"].data} 
-              auditResult={apiData["security"].audit}
-              loading={apiData["security"].status === 'loading'}
-              />
-          </Grid>
-          <Grid xs={12} lg={6}>
-            <CardTransactions customerData={customerData} />
-          </Grid>
-          <Grid xs={12} lg={6}>
-            <PieCharts content={pieData} key={undefined} />
-          </Grid>
 
-          <Grid xs={12} lg={6}>
-            <FillLineCharts content={monthlyData} />
-          </Grid><Grid xs={12} lg={6}>
-            <DataTableCard customerData={customerData} competitorData={competitorData} />
-          </Grid>
-          
-        </Grid.Container>
+            </Grid><Grid xs={6} sm={6} md={3} lg={3}>
+              <DataCard
+                title="ACCESSIBILITY"
+                subText="Accessibility could not be measured at the moment"
+                content={apiData['accessibility'].data}
+                auditResult={apiData['accessibility'].audit} 
+                loading={apiData['accessibility'].status === 'loading'}
+              />
+            </Grid><Grid xs={6} sm={6} md={3} lg={3}>
+              <DataCard
+                title="SEO"
+                subText="SEO could not be measured at the moment"
+                content={apiData["seo"].data}
+                auditResult={apiData["seo"].audit}
+                loading={apiData["seo"].status === 'loading'}
+              />
+            </Grid><Grid xs={6} sm={6} md={3} lg={3}>
+              <DataCard
+                title="SECURITY"
+                subText="Security could not be measured at the moment"
+                content={apiData["security"].data} 
+                auditResult={apiData["security"].audit}
+                loading={apiData["security"].status === 'loading'}
+              />
+            </Grid>
+            <Grid xs={12} lg={6}>
+              <CardTransactions customerData={customerData} />
+            </Grid>
+            <Grid xs={12} lg={6}>
+              <PieCharts content={pieData} key={undefined} />
+            </Grid>
+            <Grid xs={12} lg={12} id="PERFORMANCE" css={{scrollMarginTop: "5rem"}}>
+              <AuditList auditData={apiData['perfomance'].audit} title="PERFORMANCE" loading={apiData['perfomance'].status === "loading"}/>
+            </Grid>
+            <Grid xs={12} lg={12} id="ACCESSIBILITY" css={{scrollMarginTop: "5rem"}}>
+              <AuditList auditData={apiData['accessibility'].audit} title="ACCESSIBILITY" loading={apiData['accessibility'].status === "loading"}/>
+            </Grid>
+            <Grid xs={12} lg={12} id="SEO" css={{scrollMarginTop: "5rem"}}>
+              <AuditList auditData={apiData["seo"].audit} title="SEO" loading={apiData["seo"].status === 'loading'}/>
+            </Grid>
+            <Grid xs={12} lg={12} id="SECURITY" css={{scrollMarginTop: "5rem"}}>
+              <AuditList auditData={apiData["security"].audit} title="SECURITY" loading={apiData["security"].status === 'loading'}/>
+            </Grid>
+            <Grid xs={12} lg={6}>
+              <FillLineCharts content={monthlyData} />
+            </Grid><Grid xs={12} lg={6}>
+              <DataTableCard customerData={customerData} competitorData={competitorData} />
+            </Grid>
+
+          </Grid.Container>
         </>}
     </div>
   );
