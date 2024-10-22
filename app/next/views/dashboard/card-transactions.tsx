@@ -1,9 +1,39 @@
 import { Flex, FlexBox } from '@/components';
 import { Avatar, Card, Divider, Text } from '@nextui-org/react';
 import React, { useEffect } from 'react';
+import ContentLoader from "react-content-loader";
 // import {Flex} from '../styles/flex';
 
-export const CardTransactions = (customerData: any) => {
+const Loader = () => (
+   <ContentLoader
+     viewBox="0 0 380 70"
+     speed={1}
+     backgroundColor="#f3f3f3"
+     foregroundColor="#ded9d9"
+   >
+     <rect x="0" y="0" rx="5" ry="5" width="350" height="15" />
+     <rect x="0" y="17" rx="4" ry="4" width="300" height="13" />
+     <rect  y="35"  rx="4" width="300" height="13" />
+   </ContentLoader>
+ );
+
+export const CardTransactions = ({customerData, loading}: any) => {
+
+   if (loading) return(
+<Card
+         css={{
+            // mw: '375px',
+            height: 'auto',
+            bg: '$accents0',
+            borderRadius: '$xl',
+            // alignContent: 'start',
+            justifyContent: 'start',
+            px: '$6',
+         }}
+      >
+         <Loader/>
+      </Card>
+   )
 
    console.log(customerData);
    return (
@@ -19,28 +49,11 @@ export const CardTransactions = (customerData: any) => {
          }}
       >
          <Card.Body css={{ py: '$10' }}>
-            {/* <Flex
-      css={{
-        justifyContent: "center",
-        alignItems: "center",
-        height: "80vh",
-      }}
-    > */}
             <Flex css={{ gap: '$5', justifyContent: 'start' }} >
-               {/* <Text h3 css={{ textAlign: 'center' }}>
-                  {customerData?.customerData?.SiteName?.toUpperCase()}
-               </Text> */}
                <Text b css={{ lineHeight: "$xm" }}>
-               {customerData?.customerData?.SiteName?.toUpperCase()}
+               {customerData?.SiteName?.toUpperCase()}
             </Text>
             </Flex>
-            {/* <Divider></Divider> */}
-            {/* <FlexBox
-              w={370}
-              flexDirection="column"
-              jc="space-between"
-              ai="center"
-            ></FlexBox> */}
             <FlexBox
                css={{ gap: '$6', py: '$4' }}
                align={'center'}
@@ -59,11 +72,10 @@ export const CardTransactions = (customerData: any) => {
                      Category
                   </Text>
                   <Text span css={{ color: '$green800' }} size={'$xm'}>
-                     {customerData?.customerData?.CategoryRank?.Category}
+                     {customerData?.CategoryRank?.Category}
                   </Text>
 
                </Flex>
-               {/* <Flex css={{gap: '$6'}} align={'center'} justify="between"> */}
                <Flex
                   css={{
                      gap: '$6',
@@ -76,13 +88,11 @@ export const CardTransactions = (customerData: any) => {
                      Bounce Rate :
                   </Text>
                   <Text span css={{ color: '$green800' }} size={'$xm'}>
-                     {/* {customerData.customerData.Engagments.BounceRate} */}
-                     {(Math.round(customerData.customerData?.Engagments?.BounceRate * 100) / 100) * 100} %
+                     {(Math.round(customerData?.Engagments?.BounceRate * 100) / 100) * 100} %
                   </Text>
                  
                </Flex>
 
-               {/* <Flex css={{gap: '$6'}} align={'center'} justify="between"> */}
                <Flex
                   css={{
                      gap: '$6',
@@ -95,11 +105,10 @@ export const CardTransactions = (customerData: any) => {
                      Page Per Visit :
                   </Text>
                   <Text span css={{ color: '$green800' }} size={'$xm'}>
-                     {Math.round(customerData.customerData?.Engagments?.PagePerVisit * 100) / 100}
+                     {Math.round(customerData?.Engagments?.PagePerVisit * 100) / 100}
                   </Text>
                   
                </Flex>
-               {/* <Flex css={{gap: '$6'}} align={'center'} justify="between"> */}
                <Flex
                   css={{
                      gap: '$6',
@@ -112,11 +121,10 @@ export const CardTransactions = (customerData: any) => {
                      Time On Site
                   </Text>
                   <Text span css={{ color: '$green800' }} size={'$xm'}>
-                     {Math.round(customerData.customerData?.Engagments?.TimeOnSite * 100) / 100}
+                     {Math.round(customerData?.Engagments?.TimeOnSite * 100) / 100}
                   </Text>
                   
                </Flex>
-               {/* <Flex css={{gap: '$6'}} align={'center'} justify="between"> */}
                <Flex
                   css={{
                      gap: '$6',
@@ -129,7 +137,7 @@ export const CardTransactions = (customerData: any) => {
                      Visits
                   </Text>
                   <Text span css={{ color: '$green800' }} size={'$xm'}>
-                     {Math.round(customerData.customerData?.Engagments?.Visits * 100) / 100}
+                     {Math.round(customerData?.Engagments?.Visits * 100) / 100}
                   </Text>
                  
                </Flex>
@@ -146,7 +154,7 @@ export const CardTransactions = (customerData: any) => {
                      Year
                   </Text>
                   <Text span css={{ color: '$green800' }} size={'$xm'}>
-                     {Math.round(customerData.customerData?.Engagments?.Year * 100) / 100}
+                     {Math.round(customerData?.Engagments?.Year * 100) / 100}
                   </Text>
                  
                </Flex>
