@@ -112,14 +112,25 @@ export const DashboardPage = () => {
           setCompetitorData({data, apiState: 'success'});
           
         })
-      fetch('https://api.allorigins.win/get?url=http://data.similarweb.com/api/v1/data?domain=' + currentUrl)
-        .then((res) => res.json())
+      fetch(
+        "https://api.allorigins.win/get?url=http://data.similarweb.com/api/v1/data?domain=" +
+          currentUrl,
+        { mode: "no-cors" }
+      )
+        .then((resp) => {
+          if (resp.ok) return resp.json();
+          throw new Error("Network response was not ok.");
+        })
         .then((data) => {
-          
-          setCustomerData({data: JSON.parse(data.contents), apiState: 'success'});
+          console.log("debug:: data::", data);
+          setCustomerData({
+            data: JSON.parse(data.contents),
+            apiState: "success",
+          });
           setMonthlyData(JSON.parse(data.contents).EstimatedMonthlyVisits);
           // setCountryImage("https://flagsapi.com/"+data.CountryRank.CountryCode+"/shiny/64.png")
         })
+        .catch((err) => console.log("debug:: all origin::", err));
   
       setSearch(false);
     } else {
